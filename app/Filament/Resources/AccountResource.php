@@ -21,7 +21,7 @@ class AccountResource extends Resource
 {
     protected static ?string $model = Account::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+    protected static ?string $navigationIcon = 'heroicon-o-wallet';
 
     public static function form(Form $form): Form
     {
@@ -75,7 +75,15 @@ class AccountResource extends Resource
                 TextColumn::make('initial_balance')
                     ->label('Initial Balance')
                     ->numeric(
-                        decimalPlaces: 0,
+                        decimalPlaces: 2,
+                        thousandsSeparator: ',',
+                    )
+                    ->sortable(),
+                TextColumn::make('balance')
+                    ->label('Current Balance')
+                    ->getStateUsing(fn (Account $record) => $record->getBalance())
+                    ->numeric(
+                        decimalPlaces: 2,
                         thousandsSeparator: ',',
                     )
                     ->sortable(),
