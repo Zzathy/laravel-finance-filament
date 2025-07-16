@@ -22,7 +22,7 @@ class TransactionResource extends Resource
 {
     protected static ?string $model = Transaction::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+    protected static ?string $navigationIcon = 'heroicon-o-arrows-right-left';
 
     public static function form(Form $form): Form
     {
@@ -39,6 +39,8 @@ class TransactionResource extends Resource
                 Select::make('category_id')
                     ->label('Category')
                     ->relationship('category', 'name')
+                    ->searchable()
+                    ->preload()
                     ->nullable(),
                 Select::make('type')
                     ->label('Type')
