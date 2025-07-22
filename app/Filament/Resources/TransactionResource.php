@@ -10,6 +10,7 @@ use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Form;
+use Filament\Forms\Get;
 use Filament\Resources\Resource;
 use Filament\Support\RawJs;
 use Filament\Tables;
@@ -33,24 +34,30 @@ class TransactionResource extends Resource
                     ->label('Account')
                     ->relationship('account', 'name')
                     ->required(),
+                Select::make('type')
+                        ->label('Type')
+                        ->options([
+                            'Income' => 'Income',
+                            'Expense' => 'Expense',
+                            'Transfer' => 'Transfer',
+                        ])
+                        ->default('Expense')
+                        ->reactive()
+                        ->required(),
                 Select::make('destination_account_id')
                     ->label('Destination Account')
                     ->relationship('destinationAccount', 'name')
+                    ->visible(fn (Get $get): bool => $get('type') === 'Transfer')
+                    ->required(fn (Get $get): bool => $get('type') === 'Transfer')
                     ->nullable(),
                 Select::make('category_id')
                     ->label('Category')
                     ->relationship('category', 'name')
                     ->searchable()
                     ->preload()
+                    ->hidden(fn (Get $get): bool => $get('type') === 'Transfer')
+                    ->required(fn (Get $get): bool => $get('type') !== 'Transfer')
                     ->nullable(),
-                Select::make('type')
-                    ->label('Type')
-                    ->options([
-                        'Income' => 'Income',
-                        'Expense' => 'Expense',
-                        'Transfer' => 'Transfer',
-                    ])
-                    ->required(),
                 TextInput::make('amount')
                     ->label('Amount')
                     ->numeric()
