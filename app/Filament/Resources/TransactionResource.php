@@ -14,6 +14,7 @@ use Filament\Resources\Resource;
 use Filament\Support\RawJs;
 use Filament\Tables;
 use Filament\Tables\Columns\TextColumn;
+use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
@@ -103,7 +104,18 @@ class TransactionResource extends Resource
                     ->sortable(),
             ])
             ->filters([
-                //
+                SelectFilter::make('type')
+                    ->options([
+                        'Income' => 'Income',
+                        'Expense' => 'Expense',
+                        'Transfer' => 'Transfer',
+                    ])
+                    ->label('Transaction Type'),
+                SelectFilter::make('category')
+                    ->relationship('category', 'name')
+                    ->searchable()
+                    ->preload()
+                    ->label('Category'),
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),
